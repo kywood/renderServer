@@ -76,7 +76,7 @@ docker run --gpus all -p 8000:8000 gpu-render-server
 ## Python 라이브러리로 직접 사용
 
 ```python
-from renderer import GPURenderer, Colors
+from Render.renderer import GPURenderer, Colors
 
 renderer = GPURenderer(width=800, height=600)
 

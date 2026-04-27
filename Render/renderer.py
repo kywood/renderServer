@@ -294,7 +294,250 @@ class GPURenderer:
         )
         self._canvas.drawArc(oval, start_angle, sweep_angle, False, paint)
 
-    # ── 도형: 자유 경로 ──────────────────────────────────────────────
+    # ── 도형: 삼각호 (바닥 호 이등변삼각형) ──────────────────────────
+
+    def arc_triangle(
+        self,
+        cx: float, cy: float,
+        base_width: float,
+        height: float,
+        curvature: float = 0.3,
+        fill: Color = None,
+        stroke: Color = None,
+        stroke_width: float = 2,
+    ):
+        """
+        이등변삼각형 + 바닥만 호(곡선).
+
+        Args:
+            cx, cy: 꼭짓점 (상단) 좌표
+            base_width: 바닥 변의 너비
+            height: 꼭짓점에서 바닥까지 높이
+            curvature: 바닥 호의 휘어짐 정도
+                       양수 → 아래로 볼록 (↓)
+                       음수 → 위로 오목 (↑)
+                       0   → 직선 (일반 삼각형)
+            fill: 채우기 색상
+            stroke: 테두리 색상
+            stroke_width: 테두리 두께
+
+        사용법:
+            renderer.arc_triangle(400, 100, base_width=200, height=150, curvature=0.3)
+        """
+        half_w = base_width / 2
+        # 바닥 양 끝점
+        left_x = cx - half_w
+        left_y = cy + height
+        right_x = cx + half_w
+        right_y = cy + height
+
+        # 바닥 호의 제어점 (quadratic bezier)
+        ctrl_x = cx
+        ctrl_y = cy + height + base_width * curvature
+
+        p = skia.Path()
+        p.moveTo(cx, cy)              # 꼭짓점
+        p.lineTo(right_x, right_y)    # 오른쪽 직선 변
+        p.quadTo(ctrl_x, ctrl_y, left_x, left_y)  # 바닥 호
+        p.close()                     # 왼쪽 직선 변 (자동)
+
+        if fill:
+            paint = skia.Paint(AntiAlias=True, Color=fill.to_skia(), Style=skia.Paint.kFill_Style)
+            self._canvas.drawPath(p, paint)
+        if stroke:
+            paint = skia.Paint(AntiAlias=True, Color=stroke.to_skia(), Style=skia.Paint.kStroke_Style, StrokeWidth=stroke_width)
+            self._canvas.drawPath(p, paint)
+
+    # ── 도형: 부채꼴 (원의 곡률을 따르는 노치) ─────────────────────
+
+    def fan_notch(
+        self,
+        circle_cx: float, circle_cy: float,
+        circle_radius: float,
+        base_width: float,
+        depth: float = None,
+        angle_offset: float = 90,
+        fill: Color = None,
+        stroke: Color = None,
+        stroke_width: float = 2,
+        arc_segments: int = 64,
+    ):
+        """
+        원의 곡률을 정확히 따르는 부채꼴 (이등변삼각형 + 호).
+
+        원 위의 두 점(P1, P2)을 밑변(base_width)으로 잡고,
+        호는 원의 반지름으로 그려서 곡률이 정확히 일치함.
+        꼭짓점(apex)은 원 안쪽으로 depth만큼 들어감.
+
+        Args:
+            circle_cx, circle_cy: 원의 중심
+            circle_radius: 원의 반지름
+            base_width: 밑변 길이 (원 위의 두 점 사이 직선 거리)
+            depth: 꼭짓점이 원 안쪽으로 들어가는 깊이
+                   None이면 base_width * 0.4 자동 계산
+            angle_offset: 부채꼴 방향 (도, 화면 좌표계)
+                          90  = 아래쪽 (기본, 웨이퍼 노치)
+                          270 = 위쪽
+                          0   = 오른쪽
+                          180 = 왼쪽
+            fill: 채우기 색상
+            stroke: 테두리 색상
+            stroke_width: 테두리 두께
+            arc_segments: 호를 구성하는 선분 수 (클수록 부드러움)
+        """
+        r = circle_radius
+        w = min(base_width, 2 * r * 0.99)
+
+        # 반각 계산: θ = arcsin(w / 2r)
+        half_angle = math.asin(w / (2 * r))
+
+        # 방향 (라디안)
+        dir_rad = math.radians(angle_offset)
+
+        # 원 위의 두 점 (P1, P2)
+        p1_angle = dir_rad - half_angle
+        p2_angle = dir_rad + half_angle
+
+        # 꼭짓점 (apex) — 원 안쪽으로 depth만큼 들어감
+        d = depth if depth is not None else w * 0.4
+        apex_x = circle_cx + (r - d) * math.cos(dir_rad)
+        apex_y = circle_cy + (r - d) * math.sin(dir_rad)
+
+        # Path 구성: apex → P1 → 호(P1→P2, 점 찍기) → close(→apex)
+        p = skia.Path()
+        p.moveTo(apex_x, apex_y)
+
+        # P1 → P2 까지 원 위의 점들을 직접 계산해서 찍음
+        for i in range(arc_segments + 1):
+            t = i / arc_segments
+            angle = p1_angle + t * (p2_angle - p1_angle)
+            px = circle_cx + r * math.cos(angle)
+            py = circle_cy + r * math.sin(angle)
+            p.lineTo(px, py)
+
+        p.close()  # P2 → apex
+
+        if fill:
+            paint = skia.Paint(AntiAlias=True, Color=fill.to_skia(), Style=skia.Paint.kFill_Style)
+            self._canvas.drawPath(p, paint)
+        if stroke:
+            paint = skia.Paint(AntiAlias=True, Color=stroke.to_skia(), Style=skia.Paint.kStroke_Style, StrokeWidth=stroke_width)
+            self._canvas.drawPath(p, paint)
+
+    # ── 도형: 웨이퍼 ─────────────────────────────────────────────
+
+    def wafer(
+        self,
+        cx: float, cy: float,
+        radius: float,
+        notch_width: float = None,
+        notch_depth: float = None,
+        fill: Color = None,
+        stroke: Color = None,
+        stroke_width: float = 2,
+        notch_fill: Color = None,
+        notch_stroke: Color = None,
+    ):
+        """
+        반도체 웨이퍼 (원 + 하단 부채꼴 노치).
+
+        Args:
+            cx, cy: 웨이퍼 중심
+            radius: 웨이퍼 반지름
+            notch_width: 노치 밑변 길이 (None이면 radius * 0.12)
+            notch_depth: 노치 깊이 (None이면 notch_width * 0.4)
+            fill: 웨이퍼 채우기 색상
+            stroke: 웨이퍼 테두리 색상
+            notch_fill: 노치 채우기 (None이면 어두운 색 자동)
+            notch_stroke: 노치 테두리
+
+        사용법:
+            renderer.wafer(400, 300, 200, fill=Color(180, 180, 190))
+        """
+        # 웨이퍼 본체 (원)
+        self.circle(cx, cy, radius, fill=fill, stroke=stroke, stroke_width=stroke_width)
+
+        # 노치 크기 자동 계산
+        nw = notch_width if notch_width is not None else radius * 0.12
+        nd = notch_depth if notch_depth is not None else nw * 0.4
+
+        # 노치 색상 자동 설정 (웨이퍼보다 어두운 색)
+        nf = notch_fill or Color(60, 60, 70)
+        ns = notch_stroke
+
+        # 하단 부채꼴 노치
+        self.fan_notch(
+            cx, cy, radius,
+            base_width=nw, depth=nd,
+            angle_offset=90,  # 아래쪽 (화면 좌표계: Y가 아래로 증가)
+            fill=nf, stroke=ns, stroke_width=stroke_width,
+        )
+
+    def wafer_type2(
+        self,
+        cx: float, cy: float,
+        radius: float,
+        notch_width: float = None,
+        notch_depth: float = None,
+        fill: Color = None,
+        stroke: Color = None,
+        stroke_width: float = 2,
+        bg_color: Color = None,
+    ):
+        """
+        반도체 웨이퍼 (원 + 삼각형 겹치기 방식 노치).
+
+        원을 그린 뒤 삼각형을 겹쳐서 노치를 자연스럽게 표현.
+          1) 원 (fill + stroke)
+          2) 삼각형 (stroke=원 테두리색, fill=배경색) → 노치 모양
+          3) 삼각형 1px 아래 (stroke=배경색, fill=배경색) → 원 테두리 덮기
+
+        Args:
+            cx, cy: 웨이퍼 중심
+            radius: 웨이퍼 반지름
+            notch_width: 노치 밑변 길이 (None이면 radius * 0.12)
+            notch_depth: 노치 깊이 (None이면 notch_width * 0.5)
+            fill: 웨이퍼 채우기 색상
+            stroke: 웨이퍼 테두리 색상
+            stroke_width: 테두리 두께
+            bg_color: 배경색 (노치 안쪽 + 원 테두리 덮기용, None이면 흰색)
+
+        사용법:
+            renderer.wafer_type2(400, 300, 200,
+                                fill=Color(180, 180, 190),
+                                stroke=Color(120, 120, 130))
+        """
+        wafer_fill = fill or Color(180, 180, 190)
+        wafer_stroke = stroke or Color(120, 120, 130)
+        bg = bg_color or Colors.WHITE
+
+        nw = notch_width if notch_width is not None else radius * 0.12
+        nd = notch_depth if notch_depth is not None else nw * 0.5
+
+        # 1) 원 (웨이퍼 본체)
+        self.circle(cx, cy, radius, fill=wafer_fill, stroke=wafer_stroke, stroke_width=stroke_width)
+
+        # 노치 삼각형 꼭짓점 좌표
+        half_w = nw / 2
+        bottom = cy + radius  # 원의 맨 아래
+        apex_y = bottom - nd  # 삼각형 꼭짓점 (위로 들어감)
+
+        tri_points = [
+            (cx - half_w, bottom),   # 왼쪽 아래
+            (cx, apex_y),            # 꼭짓점 (위)
+            (cx + half_w, bottom),   # 오른쪽 아래
+        ]
+
+        # 2) 삼각형 — 노치 모양 (테두리=원 테두리색, 내부=배경색)
+        self.path(tri_points, closed=True, fill=bg, stroke=wafer_stroke, stroke_width=stroke_width)
+
+        # 3) 삼각형 stroke_width만큼 아래 — 원 테두리 덮기 (테두리=배경색, 내부=배경색)
+        tri_cover = [
+            (cx - half_w, bottom + stroke_width),
+            (cx, apex_y + stroke_width),
+            (cx + half_w, bottom + stroke_width),
+        ]
+        self.path(tri_cover, closed=True, fill=bg, stroke=bg, stroke_width=stroke_width + 1)
 
     def path(
         self,
@@ -420,24 +663,37 @@ class GPURenderer:
 
     # ── 결과 출력 ────────────────────────────────────────────────────
 
-    def finish(self) -> Image.Image:
-        """렌더링 완료 → PIL Image 반환"""
+    def _read_surface_to_pil(self) -> Image.Image:
+        """Surface에서 픽셀을 읽어 PIL Image로 변환 (GPU/CPU 모두 동작)"""
         if self._use_gpu:
             self._surface.flushAndSubmit()
 
-        skia_image = self._surface.makeImageSnapshot()
+        # 현재 surface 크기
+        w = self._surface.width()
+        h = self._surface.height()
 
-        # GPU 이미지를 CPU(NumPy)로 안전하게 가져옵니다.
-        # PIL 라이브러리와 색상 호환성을 맞추기 위해 RGBA 및 Unpremul 옵션을 줍니다.
-        arr = skia_image.toarray(
-            colorType=skia.kRGBA_8888_ColorType,
-            alphaType=skia.kUnpremul_AlphaType
+        # Surface에서 직접 픽셀 읽기 (GPU→CPU 전송 포함)
+        info = skia.ImageInfo.Make(
+            w, h,
+            skia.kRGBA_8888_ColorType,
+            skia.kUnpremul_AlphaType,
         )
-        return Image.fromarray(arr)
+        row_bytes = w * 4
+        pixel_data = bytearray(h * row_bytes)
+        success = self._surface.readPixels(info, pixel_data, row_bytes, 0, 0)
+
+        if success:
+            return Image.frombytes("RGBA", (w, h), bytes(pixel_data))
+
+        raise RuntimeError("Surface에서 픽셀 읽기 실패")
+
+    def finish(self) -> Image.Image:
+        """렌더링 완료 → PIL Image 반환"""
+        return self._read_surface_to_pil()
 
     def finish_bytes(self, format: str = "png", quality: int = 90) -> bytes:
         """렌더링 완료 → bytes 반환 (서버 응답용)"""
-        pil_image = self.finish()
+        pil_image = self._read_surface_to_pil()
         buf = io.BytesIO()
         if format == "jpeg":
             pil_image = pil_image.convert("RGB")

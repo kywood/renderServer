@@ -3,7 +3,7 @@ import math
 import skia
 
 # renderer.py에서 필요한 클래스들을 불러옵니다.
-from renderer import GPURenderer, Color, Colors
+from Render.renderer import GPURenderer, Color, Colors
 
 
 def draw_wafer_demo():
