@@ -24,11 +24,18 @@ def draw_wafer(cx, cy, radius, notch_angle, notch_depth, stroke_width=5.0, outpu
     path.lineTo(notch_tip_x, notch_tip_y)
     path.close()
 
+    canvas.save()
+    canvas.clipPath(path)
+
+
     # 3. 페인트(Paint) 속성 설정
     # 내부 채우기 (흰색)
+
+    fill_color = skia.ColorSetARGB(255, 255, 255, 255)
+
     fill_paint = skia.Paint(
         AntiAlias=True,
-        Color=skia.ColorWHITE,
+        Color=fill_color,
         Style=skia.Paint.kFill_Style
     )
 
@@ -40,6 +47,9 @@ def draw_wafer(cx, cy, radius, notch_angle, notch_depth, stroke_width=5.0, outpu
         Style=skia.Paint.kStroke_Style,
         StrokeWidth=stroke_width  # 👈 입력받은 두께 변수를 적용
     )
+
+    canvas.restore()
+
 
     # 4. 캔버스에 그리기
     canvas.drawPath(path, fill_paint)  # 내부 채우기
@@ -61,5 +71,5 @@ if __name__ == "__main__":
                output_filename="../TestCode/wafer_thick.png")
 
     # 예시: 테두리 두께를 2.0으로 얇게 설정하여 그리기
-    draw_wafer(cx=250, cy=250, radius=200, notch_angle=6, notch_depth=5, stroke_width=2.0,
+    draw_wafer(cx=250, cy=250, radius=200, notch_angle=2, notch_depth=5, stroke_width=1,
                output_filename="../TestCode/wafer_thin.png")
