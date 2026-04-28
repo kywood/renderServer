@@ -205,7 +205,10 @@ gpu-render-server/
 │   └── skia_shapes_demo.py  # 독립 실행 데모
 └── README.md
 ```
-
+## 샘플 이미지
+![wafer_rendered_by_class.png](TestCode/wafer_rendered_by_class.png)
+![wafer_thin.png](TestCode/wafer_thin.png)
+![wafer_thin.png](TestCode/wafer_thin.png)
 
 ## 성능 평가
 ```렌더러: Skia GPU (OpenGL/EGL)
