@@ -208,7 +208,7 @@ gpu-render-server/
 ## 샘플 이미지
 ![wafer_rendered_by_class.png](TestCode/wafer_rendered_by_class.png)
 ![wafer_thin.png](TestCode/wafer_thin.png)
-![wafer_thin.png](TestCode/wafer_thin.png)
+![img.png](TestCode/img.png)
 
 ## 성능 평가
 ```렌더러: Skia GPU (OpenGL/EGL)
