@@ -17,7 +17,7 @@ def draw_arrow(canvas, x1, y1, x2, y2, color, head_size=5, line_width=1):
     )
     canvas.drawLine(x1, y1, x2, y2, paint_line)
 
-    # 2. 화살촉 (삼각형 Path)
+    # 2. 화살촉 (삼각형 path)
     path = skia.Path()
     path.moveTo(x2, y2)
     path.lineTo(

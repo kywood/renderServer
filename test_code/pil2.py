@@ -1,5 +1,5 @@
-# from Render import renderer
-from Render.renderer import GPURenderer, Colors
+# from render import renderer
+from modules.render import GPURenderer, Colors
 
 renderer = GPURenderer(width=800, height=600)
 
@@ -25,7 +25,7 @@ renderer.rect(500, 250, 200, 120, fill=Colors.PURPLE, corner_radius=16)       # 
 # ── 호 ──────────────────────────────────────
 renderer.arc(300, 500, radius_x=80, start_angle=0, sweep_angle=270, color=Colors.CYAN)
 
-# ── 다각형 (Path) ──────────────────────────
+# ── 다각형 (path) ──────────────────────────
 renderer.path([(100,550), (200,480), (300,550)], closed=True, fill=Colors.ORANGE)
 
 # ── 텍스트 ──────────────────────────────────

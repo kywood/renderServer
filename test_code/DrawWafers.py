@@ -11,7 +11,7 @@ import time
 import random
 import logging
 
-from Render.renderer import Color, Colors, GPURenderer
+from modules.render import Color, Colors, GPURenderer
 
 logging.basicConfig(level=logging.INFO)
 

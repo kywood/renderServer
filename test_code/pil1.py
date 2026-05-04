@@ -1,4 +1,4 @@
-from Render.renderer import GPURenderer, Colors
+from modules.render import GPURenderer, Colors
 
 # 1) 렌더러 생성 (GPU 자동 감지)
 renderer = GPURenderer(width=800, height=600)

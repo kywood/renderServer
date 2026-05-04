@@ -1,5 +1,5 @@
 # ──────────────────────────────────────────────────────────────────────
-# GPU Render Server — NVIDIA Container Toolkit 기반
+# GPU render Server — NVIDIA Container Toolkit 기반
 # 실행: docker run --gpus all -p 8000:8000 gpu-render-server
 # ──────────────────────────────────────────────────────────────────────
 FROM nvidia/opengl:1.2-glvnd-runtime-ubuntu22.04

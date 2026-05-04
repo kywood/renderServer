@@ -76,7 +76,7 @@ docker run --gpus all -p 8000:8000 gpu-render-server
 ## Python 라이브러리로 직접 사용
 
 ```python
-from Render.renderer import GPURenderer, Colors
+from modules.render import GPURenderer, Colors
 
 renderer = GPURenderer(width=800, height=600)
 
@@ -206,9 +206,9 @@ gpu-render-server/
 └── README.md
 ```
 ## 샘플 이미지
-![wafer_rendered_by_class.png](TestCode/wafer_rendered_by_class.png)
-![wafer_thin.png](TestCode/wafer_thin.png)
-![img.png](TestCode/img.png)
+![wafer_rendered_by_class.png](test_code/wafer_rendered_by_class.png)
+![wafer_thin.png](test_code/wafer_thin.png)
+![img.png](test_code/img.png)
 
 ## 성능 평가
 ```렌더러: Skia GPU (OpenGL/EGL)

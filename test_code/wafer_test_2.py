@@ -11,7 +11,7 @@ def draw_wafer(cx, cy, radius, notch_angle, notch_depth, stroke_width=5.0, outpu
     canvas = surface.getCanvas()
     canvas.clear(skia.ColorWHITE)
 
-    # 2. 패스(Path) 생성
+    # 2. 패스(path) 생성
     path = skia.Path()
     bounds = skia.Rect.MakeLTRB(cx - radius, cy - radius, cx + radius, cy + radius)
     half_notch = notch_angle / 2.0
@@ -68,8 +68,8 @@ def draw_wafer(cx, cy, radius, notch_angle, notch_depth, stroke_width=5.0, outpu
 if __name__ == "__main__":
     # 예시: 테두리 두께를 10.0으로 굵게 설정하여 그리기
     draw_wafer(cx=250, cy=250, radius=200, notch_angle=6, notch_depth=5, stroke_width=10.0,
-               output_filename="../TestCode/wafer_thick.png")
+               output_filename="wafer_thick.png")
 
     # 예시: 테두리 두께를 2.0으로 얇게 설정하여 그리기
     draw_wafer(cx=250, cy=250, radius=200, notch_angle=2, notch_depth=5, stroke_width=1,
-               output_filename="../TestCode/wafer_thin.png")
+               output_filename="wafer_thin.png")

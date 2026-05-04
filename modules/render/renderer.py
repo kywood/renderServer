@@ -403,7 +403,7 @@ class GPURenderer:
         apex_x = circle_cx + (r - d) * math.cos(dir_rad)
         apex_y = circle_cy + (r - d) * math.sin(dir_rad)
 
-        # Path 구성: apex → P1 → 호(P1→P2, 점 찍기) → close(→apex)
+        # path 구성: apex → P1 → 호(P1→P2, 점 찍기) → close(→apex)
         p = skia.Path()
         p.moveTo(apex_x, apex_y)
 

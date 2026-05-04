@@ -216,7 +216,7 @@ def main():
         canvas.drawRRect(rrect,
             skia.Paint(AntiAlias=True, Color=skia.Color(0, 188, 212)))
 
-        # 삼각형 (Path)
+        # 삼각형 (path)
         tri = skia.Path()
         tri.moveTo(100, 550)
         tri.lineTo(200, 460)

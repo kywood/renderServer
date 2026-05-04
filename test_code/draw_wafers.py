@@ -12,7 +12,7 @@ import random
 import logging
 
 
-from Render.renderer import GPURenderer, Colors, Color
+from modules.render import GPURenderer, Colors, Color
 
 logging.basicConfig(level=logging.INFO)
 

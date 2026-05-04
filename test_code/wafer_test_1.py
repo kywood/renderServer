@@ -17,7 +17,7 @@ def draw_wafer(cx, cy, radius, notch_angle, notch_depth, output_filename="wafer.
         Style=skia.Paint.kFill_Style  # 내부 채우기
     )
 
-    # 3. 패스(Path) 그리기 시작
+    # 3. 패스(path) 그리기 시작
     path = skia.Path()
 
     # 원이 그려질 경계 사각형 (Bounding Box) 지정

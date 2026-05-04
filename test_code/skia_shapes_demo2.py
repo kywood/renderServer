@@ -118,7 +118,7 @@ def main():
         canvas.drawRRect(rrect, skia.Paint(
             AntiAlias=True, Color=skia.Color(0, 188, 212), Style=skia.Paint.kFill_Style))
 
-        # 9. 삼각형 (Path)
+        # 9. 삼각형 (path)
         path = skia.Path()
         path.moveTo(100, 550)
         path.lineTo(200, 460)

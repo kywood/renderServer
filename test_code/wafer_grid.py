@@ -11,7 +11,7 @@ def draw_wafer_with_grid(cx, cy, radius, notch_angle, notch_depth, stroke_width=
     canvas = surface.getCanvas()
     canvas.clear(skia.ColorWHITE)
 
-    # 2. 패스(Path) 생성 (웨이퍼 외곽선)
+    # 2. 패스(path) 생성 (웨이퍼 외곽선)
     path = skia.Path()
     bounds = skia.Rect.MakeLTRB(cx - radius, cy - radius, cx + radius, cy + radius)
     half_notch = notch_angle / 2.0
@@ -80,4 +80,4 @@ def draw_wafer_with_grid(cx, cy, radius, notch_angle, notch_depth, stroke_width=
 if __name__ == "__main__":
     # 격자 크기를 20 픽셀로 설정하여 그리기
     draw_wafer_with_grid(cx=250, cy=250, radius=200, notch_angle=20, notch_depth=30, stroke_width=4.0, grid_size=20.0,
-                         output_filename="../TestCode/wafer_with_grid.png")
+                         output_filename="wafer_with_grid.png")

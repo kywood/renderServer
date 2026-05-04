@@ -1,4 +1,4 @@
-from Render.renderer import GPURenderer, Colors
+from modules.render import GPURenderer, Colors
 
 renderer = GPURenderer(width=800, height=600)
 print(renderer.gpu_info)
