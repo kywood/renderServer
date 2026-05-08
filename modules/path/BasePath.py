@@ -1,6 +1,6 @@
 import sys
 
-from common_lib.Utils.Singleton import SingletonBase
+from modules.Utils.Singleton import SingletonBase
 
 
 class BasePath(SingletonBase):
@@ -57,21 +57,40 @@ class BasePath(SingletonBase):
 
     def Path(self ,*paths: str, trailing_slash = False ):
         new_paths = (self._basePath.as_posix(), *paths)
-        from common_lib.Utils.PathUtil import PathUtil
+        from modules.Utils.PathUtil import PathUtil
         return PathUtil.Path(*new_paths,
                              trailing_slash=trailing_slash)
 
     def Dir(self ,*paths: str ):
         new_paths = (self._basePath.as_posix(), *paths)
-        from common_lib.Utils.PathUtil import PathUtil
+        from modules.Utils.PathUtil import PathUtil
         return PathUtil.Dir(*new_paths)
 
     def File(self ,*paths: str ):
         new_paths = (self._basePath.as_posix(), *paths)
-        from common_lib.Utils.PathUtil import PathUtil
+        from modules.Utils.PathUtil import PathUtil
         return PathUtil.File(*new_paths)
 #
-
+#
+# def testDepth(configFilePath):
+#
+#
+#     print(f"testDepth :: configFilePath : {configFilePath}")
+#
+#     from modules.config.ConfigLoader import ConfigLoader
+#     configLoader = ConfigLoader.instance(configFilePath)
+#     #
+#     #
+#     print(configLoader)
+#
+#     vv = configLoader.Get("YOLO_MODEL" , "S3_PREFIX")
+#
+#     print(f"vv:{vv}")
+#
+#     pass
+#
+# #
+#
 # #
 # #
 # if __name__ == '__main__':
@@ -85,6 +104,10 @@ class BasePath(SingletonBase):
 #
 #     d = BasePath.instance().File("a", "bb", "aa","a.mov")
 #     print(d)
+# ## 이걸 이용해서 config 의 path 를 얻을수 있어야 함
 #
+
+
+
 
 

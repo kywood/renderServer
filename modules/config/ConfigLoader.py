@@ -1,7 +1,7 @@
 import os
 import configparser
 from typing import Optional
-
+from modules.Utils.Singleton import SingletonBase
 
 
 class ConfigLoader(SingletonBase):
