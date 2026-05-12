@@ -18,12 +18,11 @@ def create_app() -> FastAPI:
     configLoader = ConfigLoader.instance(configFilePath)
 
 
-    # config = ConfigLoader.instance()
-    # InferenceManager.instance(config).Initialize()
-
     from server.Server.ApiServer import ApiServer
     server = ApiServer(title=configLoader.Get('APP','NAME'))
-    server.add_controller(RenderController(configLoader, prefix="/render") )
+    # server.add_controller(RenderController(configLoader, prefix="/render") )
+    from server.Controller.RenderControllerAsync import RenderControllerAsync
+    server.add_controller(RenderControllerAsync(configLoader, prefix="/render") )
     app = server.build()
     return app
 
