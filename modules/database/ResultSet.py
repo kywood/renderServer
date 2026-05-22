@@ -19,10 +19,11 @@ class Row:
 
 class ResultSet:
 
-    def __init__(self, rows: list[dict]):
+    def __init__(self, rows: list[dict], affected_count: int = None):
         self._rows = rows
         self._columns = list(rows[0].keys()) if rows else []
         self._cursor = -1
+        self._affected_count = affected_count if affected_count is not None else len(rows)
 
     def next(self) -> bool:
         self._cursor += 1
@@ -37,6 +38,13 @@ class ResultSet:
     @property
     def row_count(self) -> int:
         return len(self._rows)
+
+
+
+    @property
+    def affected_count(self) -> int:
+        """SELECT: len(rows), DML: actual rowcount from DB"""
+        return self._affected_count
 
     def is_empty(self) -> bool:
         return len(self._rows) == 0

@@ -17,11 +17,11 @@ class ISyncDatabase(IDatabase):
         ...
 
     @abstractmethod
-    def select_one(self, query: str, params: dict = None) -> Row | None:
+    def select_one(self, query: str, params: dict = None) -> ResultSet :
         ...
 
     @abstractmethod
-    def update(self, query: str, params: dict = None) -> int:
+    def update(self, query: str, params: dict = None) -> ResultSet:
         ...
 
     @abstractmethod
@@ -36,11 +36,11 @@ class IAsyncDatabase(IDatabase):
         ...
 
     @abstractmethod
-    async def select_one_async(self, query: str, params: dict = None) -> Row | None:
+    async def select_one_async(self, query: str, params: dict = None) -> ResultSet:
         ...
 
     @abstractmethod
-    async def update_async(self, query: str, params: dict = None) -> int:
+    async def update_async(self, query: str, params: dict = None) -> ResultSet:
         ...
 
     @abstractmethod

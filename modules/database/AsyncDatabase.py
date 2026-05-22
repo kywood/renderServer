@@ -28,15 +28,18 @@ class AsyncDatabase(AbAsyncDatabase):
             rows = [dict(row._mapping) for row in result]
             return ResultSet(rows)
 
-    async def select_one_async(self, query: str, params: dict = None) -> Row | None:
-        result = await self.select_async(query, params)
-        return result.first()
+    async def select_one_async(self, query: str, params: dict = None) -> ResultSet:
+        async with self._engine.connect() as conn:
+            result = await conn.execute(text(query), params or {})
+            row = result.fetchone()
+            rows = [dict(row._mapping)] if row else []
+            return ResultSet(rows)
 
-    async def update_async(self, query: str, params: dict = None) -> int:
+    async def update_async(self, query: str, params: dict = None) -> ResultSet:
         async with self._engine.connect() as conn:
             result = await conn.execute(text(query), params or {})
             await conn.commit()
-            return result.rowcount
+            return ResultSet(rows=[], affected_count=result.rowcount)
 
     async def close_async(self) -> None:
         if self._engine:
