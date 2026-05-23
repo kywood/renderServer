@@ -68,6 +68,28 @@ python server.py
 
 ### Docker 실행
 
+
+# 방법 1 — docker-compose (권장)
+```
+cd deploy/GPU
+docker-compose up -d --build
+```
+
+
+# 방법 2 — 수동 빌드
+```
+docker build -t gpu-render-server -f deploy/GPU/Dockerfile .
+docker run --gpus all -p 8000:8000 gpu-render-server
+```
+
+
+# REST만 테스트 (GPU 없이)
+```
+cd deploy/REST_ONLY
+docker-compose up -d --build
+```
+
+## 아래 방법 사용 안함
 ```bash
 docker build -t gpu-render-server .
 docker run --gpus all -p 8000:8000 gpu-render-server

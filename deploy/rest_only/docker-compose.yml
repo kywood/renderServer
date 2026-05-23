@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+
+  db:
+    image: postgres:16
+    container_name: pg-test
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: testdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U testuser -d testdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build:
+      context: ../..
+      dockerfile: deploy/REST_ONLY/Dockerfile
+    container_name: rest-server
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: testuser
+      DB_PASSWORD: testpass
+      DB_NAME: testdb
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
