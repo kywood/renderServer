@@ -1,5 +1,6 @@
 import os
 import configparser
+from pathlib import Path
 from typing import Optional
 from modules.Utils.Singleton import SingletonBase
 
@@ -8,8 +9,16 @@ class ConfigLoader(SingletonBase):
     def __init__(self, path: str = "config.ini"):
         super().__init__()
 
+        p = Path(path)
 
-        self.path = path
+        # 2. 만약 리눅스 환경인데 맨 앞 슬래시가 빠진 'app/conf/...' 형태로 들어왔다면
+        if os.name != 'nt' and p.as_posix().startswith("app/"):
+            # 강제로 앞에 슬래시를 붙여 진짜 절대 경로(/app/...)로 복원합니다.
+            self.path = os.path.abspath("/" + p.as_posix())
+        else:
+            # 그 외 윈도우 환경이거나 정상적인 절대 경로라면 자체 resolve() 및 absolute 처리
+            self.path = os.path.abspath(p.resolve())
+
         self._config = configparser.ConfigParser()
 
         self._load()

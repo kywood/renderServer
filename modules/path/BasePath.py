@@ -10,8 +10,11 @@ class BasePath(SingletonBase):
         super().__init__()
         from pathlib import Path
 
-        entry = sys.argv[0]
-        base_path = Path(entry).resolve().parent
+        # entry = sys.argv[0]
+        # base_path = Path(entry).resolve().parent
+
+        current_file = Path(__file__).resolve()
+        base_path = current_file.parents[2]
 
         if relative_path:
             base_path = (base_path / relative_path).resolve()
@@ -105,7 +108,7 @@ class BasePath(SingletonBase):
 #     d = BasePath.instance().File("a", "bb", "aa","a.mov")
 #     print(d)
 # ## 이걸 이용해서 config 의 path 를 얻을수 있어야 함
-#
+
 
 
 
