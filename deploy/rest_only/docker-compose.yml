@@ -21,8 +21,8 @@ services:
 
   app:
     build:
-      context: ../..
-      dockerfile: deploy/REST_ONLY/Dockerfile
+      context: ../../
+      dockerfile: deploy/rest_only/Dockerfile
     container_name: rest-server
     ports:
       - "8000:8000"

@@ -24,7 +24,7 @@ COPY . .
 EXPOSE 8000
 
 # Uvicorn 워커 4개 (GPU context는 각 워커별 1개)
-CMD ["uvicorn", "server:app", \
+CMD ["uvicorn", "RenderServer:app", \
      "--host", "0.0.0.0", \
      "--port", "8000", \
      "--workers", "4"]
