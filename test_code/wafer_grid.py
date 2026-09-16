@@ -7,8 +7,20 @@ def draw_wafer_with_grid(cx, cy, radius, notch_angle, notch_depth, stroke_width=
     내부는 흰색, 테두리는 짙은 회색, 내부에 격자(Grid)가 그려진 노치 웨이퍼를 생성합니다.
     """
     # 1. 캔버스 생성
-    surface = skia.Surface(int(cx * 2), int(cy * 2))
-    canvas = surface.getCanvas()
+    # surface = skia.Surface(int(cx * 2), int(cy * 2))
+
+    from modules.render.renderer import GPURenderer
+    renderer = GPURenderer(
+        width=int(cx * 2),
+        height=int(cy * 2),
+        use_gpu=True,
+    )
+    from modules.render.renderer import Colors
+    renderer.begin(bg_color=Colors.WHITE)
+
+    canvas = renderer._canvas
+
+    # canvas = surface.getCanvas()
     canvas.clear(skia.ColorWHITE)
 
     # 2. 패스(path) 생성 (웨이퍼 외곽선)
@@ -68,8 +80,10 @@ def draw_wafer_with_grid(cx, cy, radius, notch_angle, notch_depth, stroke_width=
     canvas.drawPath(path, stroke_paint)
 
     # 5. 결과물 저장
-    image = surface.makeImageSnapshot()
-    image.save(output_filename, skia.kPNG)
+    image = renderer.finish()
+    image.save(output_filename)
+
+    renderer.release()
     print(f"격자가 추가된 웨이퍼 렌더링 완료! '{output_filename}' 저장 완료.")
 
 
@@ -79,5 +93,5 @@ def draw_wafer_with_grid(cx, cy, radius, notch_angle, notch_depth, stroke_width=
 # ==========================================
 if __name__ == "__main__":
     # 격자 크기를 20 픽셀로 설정하여 그리기
-    draw_wafer_with_grid(cx=250, cy=250, radius=200, notch_angle=20, notch_depth=30, stroke_width=4.0, grid_size=20.0,
+    draw_wafer_with_grid(cx=250, cy=250, radius=200, notch_angle=4, notch_depth=5, stroke_width=2.0, grid_size=10.0,
                          output_filename="wafer_with_grid.png")

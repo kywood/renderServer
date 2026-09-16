@@ -79,9 +79,7 @@ class GPURenderer:
         # 또는 bytes로: renderer.finish_bytes(format="png")
     """
 
-    def __init__(self, width: int = 1920, height: int = 1080, use_gpu: bool = True):
-        self.width = width
-        self.height = height
+    def __init__(self, use_gpu: bool = True):
         self._gpu_context = None
         self._surface = None
         self._canvas = None
@@ -93,58 +91,6 @@ class GPURenderer:
             if self._gpu_context is None:
                 self._use_gpu = False
 
-    # @staticmethod
-    # def _create_gpu_context():
-    #     """
-    #     Skia GPU에 필요한 OpenGL 컨텍스트를 생성.
-    #     순서: GLFW(데스크탑) → EGL(headless) → GLX(X11) → 실패
-    #     """
-    #     # 1) GLFW — 데스크탑 환경 (숨긴 윈도우)
-    #     try:
-    #         import glfw
-    #         if glfw.init():
-    #             glfw.window_hint(glfw.VISIBLE, glfw.FALSE)
-    #             glfw.window_hint(glfw.STENCIL_BITS, 8)
-    #             window = glfw.create_window(1, 1, "", None, None)
-    #             if window:
-    #                 glfw.make_context_current(window)
-    #                 ctx = skia.GrDirectContext.MakeGL()
-    #                 if ctx:
-    #                     logger.info("GPU context 생성 성공 (GLFW)")
-    #                     return ctx, ("glfw", window)
-    #             glfw.terminate()
-    #     except ImportError:
-    #         pass
-    #     except Exception as e:
-    #         logger.debug("GLFW 실패: %s", e)
-    #
-    #     # 2) EGL — headless 서버 (모니터 불필요)
-    #     try:
-    #         import moderngl
-    #         mgl = moderngl.create_standalone_context(backend="egl")
-    #         interface = skia.GrGLInterface.MakeEGL()
-    #         ctx = skia.GrDirectContext.MakeGL(interface)
-    #         if ctx:
-    #             logger.info("GPU context 생성 성공 (EGL)")
-    #             return ctx, ("egl", mgl)
-    #     except Exception as e:
-    #         logger.debug("EGL 실패: %s", e)
-    #
-    #     # 3) GLX — X11 환경
-    #     try:
-    #         import moderngl
-    #         mgl = moderngl.create_standalone_context()
-    #         ctx = skia.GrDirectContext.MakeGL()
-    #         if ctx:
-    #             logger.info("GPU context 생성 성공 (GLX)")
-    #             return ctx, ("glx", mgl)
-    #     except Exception as e:
-    #         logger.debug("GLX 실패: %s", e)
-    #
-    #     logger.warning("GPU context 생성 실패 — CPU 폴백")
-    #     return None, None
-    #
-    #
 
     @staticmethod
     def _create_gpu_context():

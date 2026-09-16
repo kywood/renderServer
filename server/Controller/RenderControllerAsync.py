@@ -12,7 +12,7 @@ class RenderControllerAsync(abController):
         super().__init__(config, prefix)
 
     def _render_wafer(self) -> bytes:
-        renderer = GPURenderer(width=1024, height=1024, use_gpu=True)
+        renderer = GPURenderer( use_gpu=True)
         renderer.begin(1024, 1024)
         renderer.clear(Colors.BLACK)
         renderer.wafer(
