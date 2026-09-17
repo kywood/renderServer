@@ -2,25 +2,60 @@ import math
 
 from modules.render.cPoint import cPoint
 from modules.render.cRect import cRect
-from modules.wafer.cCellContainer import CellContainer
 
 
 class cWafer(object):
 
 
-    def __init__(self , point , radius , grid_size , stroke ):
+    def __init__(self ,
+                 point : cPoint,
+                 radius : int,
+                 grid_size : int ,
+                 stroke : float ,
+                 notch_angle=4.0,
+                 notch_depth=5.0,):
         self._point = point
         self._radius = radius
         self._grid_size = grid_size
         self._stroke = stroke
 
+        self._notch_angle = notch_angle
+        self._notch_depth = notch_depth
+
         from modules.wafer.cCellContainer import CellContainer
         self._cellContainer = CellContainer()
+
+
+        self._init()
 
         pass
 
     def _size(self):
         return self._radius * 2
+
+    @property
+    def point(self):
+        return self._point
+
+    @property
+    def radius(self):
+        return self._radius
+
+    @property
+    def stroke(self):
+        return self._stroke
+
+    @property
+    def grid_size(self):
+        return self._grid_size
+
+    @property
+    def notch_angle(self):
+        return self._notch_angle
+
+    @property
+    def notch_depth(self):
+        return self._notch_depth
 
     def is_in_rect(self , rect : cRect):
         radius_squared = self._radius ** 2
@@ -83,12 +118,16 @@ class cWafer(object):
 
 
     @classmethod
-    def create(cls , point , radius , grid_size , stroke = 1.0 ):
+    def create(cls , point , radius , grid_size : int , stroke = 1.0 ,
+               notch_angle=4.0, notch_depth=5.0
+               ):
         return cWafer (
-            point ,
-            radius ,
-            grid_size ,
-            stroke
+            point =point ,
+            radius = radius ,
+            grid_size =grid_size ,
+            stroke = stroke ,
+            notch_angle=notch_angle,
+            notch_depth=notch_depth
         )
 
     # def __repr__(self):

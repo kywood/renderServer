@@ -29,37 +29,6 @@ from PIL import Image
 logger = logging.getLogger(__name__)
 
 
-@dataclass
-class Color:
-    """RGBA 색상 (0~255)"""
-    r: int = 255
-    g: int = 255
-    b: int = 255
-    a: int = 255
-
-    def to_skia(self) -> int:
-        return skia.Color(self.r, self.g, self.b, self.a)
-
-    @classmethod
-    def from_hex(cls, hex_str: str) -> "Color":
-        h = hex_str.lstrip("#")
-        r, g, b = int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
-        a = int(h[6:8], 16) if len(h) == 8 else 255
-        return cls(r, g, b, a)
-
-
-class Colors:
-    WHITE = Color(255, 255, 255)
-    BLACK = Color(0, 0, 0)
-    RED = Color(234, 67, 53)
-    GREEN = Color(52, 168, 83)
-    BLUE = Color(66, 133, 244)
-    YELLOW = Color(251, 188, 4)
-    PURPLE = Color(168, 80, 222)
-    CYAN = Color(0, 188, 212)
-    ORANGE = Color(255, 109, 0)
-    TRANSPARENT = Color(0, 0, 0, 0)
-
 
 class GPURenderer:
     """
