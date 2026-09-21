@@ -17,11 +17,9 @@ https://app.diagrams.net/#G1Enzqq07T-BQjr0GoS5rM1tieKvBO_FPx#%7B%22pageId%22%3A%
 
 ![img_2.png](img_2.png)
 
-
-![wafer_sample.png](test_code/rendererTest/wafer_sample.png)
+![wafer_sample.png](wafer_sample.png)
 
 ```
-
 Total 1374.08 ms 1.37 sec 
 
 ⏱️ [Wafer Render Pipeline] Grid Render: 6.20 ms
