@@ -1,9 +1,10 @@
+from modules.render import cSize
 from modules.render.cPoint import cPoint
 
 
 class cRect:
 
-    def __init__(self , point : cPoint , size : cPoint):
+    def __init__(self , point : cPoint , size : cSize):
         self._point = point
         self._size = size
 
@@ -25,11 +26,11 @@ class cRect:
 
     @property
     def width(self):
-        return self._size.x
+        return self._size.w
 
     @property
     def height(self):
-        return self._size.y
+        return self._size.h
 
     @property
     def left(self):
